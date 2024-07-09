@@ -1,20 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import Login from './screens/Login';
+import Register from './screens/Register';
+import Home from './screens/Home';
+import useAuthentication from './utils/hooks/useAuthentication';
+
+import './config/firebase';
+
+import LoadingPage from './screens/Loading';
+import ResetPassword from './screens/ResetPassword';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const { user, loading: userLoading } = useAuthentication();
+  // const location = React.useLocation(false);
+  console.log(window.location)
+
+  if (userLoading)
+    return <LoadingPage />
+
+  if (!user)
+    if (window.location.pathname === '/register')
+      return <Register/>
+    else if(window.location.pathname === '/resetpassword')
+      return <ResetPassword />
+    else
+      return <Login/>
+  else
+    return <Home/>
+}
